@@ -1,6 +1,7 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:to_do_app/ui/providers/lang_provider.dart';
 import 'package:to_do_app/ui/providers/list_provider.dart';
 import 'package:to_do_app/ui/providers/theme_provider.dart';
 import 'package:to_do_app/ui/screens/home/tabs/todo_list/todo.dart';
@@ -17,6 +18,7 @@ class TodoList extends StatefulWidget {
 class _TodoListState extends State<TodoList> {
   late ListProvider provider;
   late ThemeProvider themeProvider;
+  late LanguageProvider languageProvider;
 
   @override
   void initState() {
@@ -30,6 +32,7 @@ class _TodoListState extends State<TodoList> {
   Widget build(BuildContext context) {
     provider = Provider.of(context);
     themeProvider = Provider.of(context);
+    languageProvider = Provider.of(context);
     return Column(
       children: [
         Expanded(
@@ -70,6 +73,7 @@ class _TodoListState extends State<TodoList> {
 
   EasyDateTimeLine buildCalender() {
     return EasyDateTimeLine(
+      locale: languageProvider.selectedLang,
       initialDate: provider.selectedDate,
       headerProps: const EasyHeaderProps(showHeader: false),
       activeColor: AppColors.primary,
