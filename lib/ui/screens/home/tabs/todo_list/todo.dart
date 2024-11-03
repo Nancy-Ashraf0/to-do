@@ -25,7 +25,6 @@ class Todo extends StatefulWidget {
 class _TodoState extends State<Todo> {
   late ListProvider provider;
   late ThemeProvider themeProvider;
-
   @override
   Widget build(BuildContext context) {
     provider = Provider.of(context);
@@ -42,29 +41,8 @@ class _TodoState extends State<Todo> {
           extentRatio: .5,
           motion: const ScrollMotion(),
           children: [
-            SlidableAction(
-              onPressed: (context) {
-                Navigator.pushReplacementNamed(context, Edit.routeName,
-                    arguments: widget.item.id);
-              },
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(15),
-                  bottomLeft: Radius.circular(15)),
-              backgroundColor: Color(0xffb6b0b0),
-              foregroundColor: Colors.white,
-              icon: Icons.edit,
-              label: context.localization.edit,
-            ),
-            SlidableAction(
-              onPressed: (context) {
-                provider.deleteDocument(
-                    TodoModel.collectionName, widget.item.id);
-              },
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-              icon: Icons.delete,
-              label: context.localization.delete,
-            ),
+            buildEditSlidableAction(context),
+            buildDeleteSlidableAction(context),
           ],
         ),
         child: Row(
@@ -94,6 +72,33 @@ class _TodoState extends State<Todo> {
           ],
         ),
       ),
+    );
+  }
+
+  SlidableAction buildDeleteSlidableAction(BuildContext context) {
+    return SlidableAction(
+      onPressed: (context) {
+        provider.deleteDocument(TodoModel.collectionName, widget.item.id);
+      },
+      backgroundColor: Colors.red,
+      foregroundColor: Colors.white,
+      icon: Icons.delete,
+      label: context.localization.delete,
+    );
+  }
+
+  SlidableAction buildEditSlidableAction(BuildContext context) {
+    return SlidableAction(
+      onPressed: (context) {
+        Navigator.pushReplacementNamed(context, Edit.routeName,
+            arguments: widget.item.id);
+      },
+      borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(15), bottomLeft: Radius.circular(15)),
+      backgroundColor: const Color(0xffb6b0b0),
+      foregroundColor: Colors.white,
+      icon: Icons.edit,
+      label: context.localization.edit,
     );
   }
 

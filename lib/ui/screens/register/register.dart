@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +10,7 @@ import 'package:to_do_app/utils/extensions.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/app_styles.dart';
 import '../../../utils/dialogue_utils/dialogue.dart';
-import '../home/home.dart';
+import '../splash/splash.dart';
 
 class Register extends StatefulWidget {
   Register({super.key});
@@ -185,11 +187,23 @@ class _RegisterState extends State<Register> {
             ElevatedButton(
                 style: const ButtonStyle(
                     backgroundColor: WidgetStatePropertyAll(AppColors.primary)),
-                onPressed: () {
+                onPressed: () async {
                   if (_passKey.currentState!.validate() &&
                       _mailKey.currentState!.validate() &&
                       _userKey.currentState!.validate()) {
-                    createAccount();
+                    await createAccount();
+                    if (FirebaseAuth.instance.currentUser != null) {
+                      FirebaseAuth.instance.currentUser!
+                          .sendEmailVerification();
+                      Timer.periodic(Duration(seconds: 6), (timer) {
+                        FirebaseAuth.instance.currentUser!.reload();
+                        if (FirebaseAuth.instance.currentUser!.emailVerified) {
+                          Navigator.pushReplacementNamed(
+                              context, Splash.routeName);
+                          timer.cancel();
+                        }
+                      });
+                    }
                   }
                 },
                 child: Text(
@@ -204,23 +218,18 @@ class _RegisterState extends State<Register> {
 
   createAccount() async {
     try {
-      Dialogue.showLoading(context);
       final credential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      Dialogue.showErrorDialog(context, errorMessage);
-      Dialogue.hideLoading(context);
       MyUser myUser =
           MyUser(id: credential.user!.uid, email: email, name: name);
       myUser.saveUserInFirestore();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.localization.registrationSuccessful)),
       );
-      Navigator.pushReplacementNamed(context, Home.routeName);
     } on FirebaseAuthException catch (e) {
-      Dialogue.hideLoading(context);
       if (e.code == 'weak-password') {
         Dialogue.showErrorDialog(context, e.code);
       } else if (e.code == 'email-already-in-use') {

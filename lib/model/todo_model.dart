@@ -20,7 +20,7 @@ class TodoModel {
       'id': id,
       'title': title,
       'description': description,
-      'date': date, // Convert date to a string for JSON compatibility
+      'date': date,
       'isDone': isDone,
     };
   }
@@ -29,7 +29,6 @@ class TodoModel {
     id = json['id'];
     title = json['title'];
     description = json['description'];
-    // Check the type of `date` before assigning it to avoid type issues
     if (json['date'] is Timestamp) {
       date = (json['date'] as Timestamp).toDate();
     } else if (json['date'] is String) {

@@ -32,5 +32,6 @@
   "passwordCantBeEmpty": "لا يمكن أن تكون كلمة المرور فارغة...",
   "signOut": "تسجيل الخروج",
   "dark": "غامق",
-  "light": "فاتح"
+  "light": "فاتح",
+  "verifyYourEmailBeforeLogIn": "يرجى التحقق من بريدك الإلكتروني قبل تسجيل الدخول ..."
 }

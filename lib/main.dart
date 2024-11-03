@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
         Edit.routeName: (_) => Edit(),
       },
       initialRoute: FirebaseAuth.instance.currentUser != null
-          ? Home.routeName
+          ? Splash.routeName
           : Login.routeName,
       localizationsDelegates: const [
         AppLocalizations.delegate,

@@ -35,7 +35,7 @@ class _SettingsState extends State<Settings> {
         Expanded(
           flex: 82,
           child: Padding(
-            padding: EdgeInsets.all(25),
+            padding: const EdgeInsets.all(25),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -43,47 +43,50 @@ class _SettingsState extends State<Settings> {
                   context.localization.language,
                   style: Theme.of(context).textTheme.labelSmall,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 18,
                 ),
                 buildLangDropdownButton(),
-                SizedBox(
+                const SizedBox(
                   height: 18,
                 ),
                 Text(
                   context.localization.mode,
                   style: Theme.of(context).textTheme.labelSmall,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 18,
                 ),
                 buildThemeDropdownButton(),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
-                InkWell(
-                  onTap: () {
-                    FirebaseAuth.instance.signOut();
-                    Navigator.pushReplacementNamed(context, Login.routeName);
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(context.localization.signOut,
-                          style: TextStyle(
-                              color: AppColors.primary, fontSize: 18)),
-                      Icon(
-                        Icons.arrow_forward,
-                        color: AppColors.primary,
-                      )
-                    ],
-                  ),
-                )
+                buildSignOutInkWell(context)
               ],
             ),
           ),
         )
       ],
+    );
+  }
+
+  InkWell buildSignOutInkWell(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        FirebaseAuth.instance.signOut();
+        Navigator.pushReplacementNamed(context, Login.routeName);
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(context.localization.signOut,
+              style: const TextStyle(color: AppColors.primary, fontSize: 18)),
+          const Icon(
+            Icons.arrow_forward,
+            color: AppColors.primary,
+          )
+        ],
+      ),
     );
   }
 
@@ -115,7 +118,7 @@ class _SettingsState extends State<Settings> {
         //languageProvider.changeLang;
         languageProvider.setLangPref(newLang!);
       },
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: AppColors.primary, width: 2))),
     );
@@ -148,7 +151,7 @@ class _SettingsState extends State<Settings> {
           themeProvider.toggle(mode == "dark");
         }
       },
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: AppColors.primary, width: 2))),
     );

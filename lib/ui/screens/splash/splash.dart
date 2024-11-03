@@ -14,7 +14,7 @@ class Splash extends StatelessWidget {
   Widget build(BuildContext context) {
     themeProvider = Provider.of(context);
     Future.delayed(
-      Duration(seconds: 2),
+      const Duration(seconds: 3),
       () {
         Navigator.pushReplacementNamed(context, Home.routeName);
       },

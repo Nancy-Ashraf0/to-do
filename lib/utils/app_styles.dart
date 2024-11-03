@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AppStyles {
+abstract class AppStyles {
   static TextStyle appBar =
       const TextStyle(fontWeight: FontWeight.w700, fontSize: 22);
   static TextStyle task =

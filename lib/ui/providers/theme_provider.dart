@@ -4,14 +4,12 @@ import 'package:to_do_app/utils/app_colors.dart';
 
 class ThemeProvider extends ChangeNotifier {
   String currentMode = "light";
+  bool isDark = false;
+  bool get isDarkMode => isDark;
 
   ThemeProvider() {
     getPrefs();
   }
-
-  bool isDark = false;
-
-  bool get isDarkMode => isDark;
 
   Future<void> toggle(bool dark) async {
     isDark = dark;

@@ -75,7 +75,6 @@ class _TodoListState extends State<TodoList> {
       activeColor: AppColors.primary,
       onDateChange: (newDate) {
         provider.selectedDate = newDate;
-        //print("selected=${provider.selectedDate}");
         provider.getTodosFromFireStore();
       },
       dayProps: EasyDayProps(

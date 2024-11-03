@@ -32,5 +32,6 @@
   "passwordCantBeEmpty": "Password can't be empty... ",
   "signOut": "Sign out",
   "dark": "dark",
-  "light": "light"
+  "light": "light",
+  "verifyYourEmailBeforeLogIn": "verify Your E-mail before log in ..."
 }

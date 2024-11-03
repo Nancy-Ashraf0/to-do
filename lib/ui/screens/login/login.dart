@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_app/utils/app_colors.dart';
@@ -5,16 +7,15 @@ import 'package:to_do_app/utils/extensions.dart';
 
 import '../../../utils/app_styles.dart';
 import '../../../utils/dialogue_utils/dialogue.dart';
-import '../home/home.dart';
 import '../register/register.dart';
+import '../splash/splash.dart';
 
 class Login extends StatefulWidget {
   static const routeName = "login";
-
-  Login({super.key});
-
   String email = "";
   String password = "";
+
+  Login({super.key});
 
   @override
   State<Login> createState() => _LoginState();
@@ -42,116 +43,18 @@ class _LoginState extends State<Login> {
             const SizedBox(
               height: 20,
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.green)),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.email_rounded,
-                    color: AppColors.black,
-                  ),
-                  const SizedBox(
-                    width: 4,
-                  ),
-                  Expanded(
-                    child: Form(
-                      key: _mailKey,
-                      child: TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Email can't be empty... ";
-                          }
-                          return null;
-                        },
-                        onChanged: (newEmail) {
-                          widget.email = newEmail;
-                        },
-                        decoration: InputDecoration(
-                          hintText: context.localization.enterYourEmail,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            buildMailContainer(context),
             const SizedBox(
               height: 20,
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.green)),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.password_outlined,
-                    color: AppColors.black,
-                  ),
-                  const SizedBox(
-                    width: 4,
-                  ),
-                  Expanded(
-                    child: Form(
-                      key: _passKey,
-                      child: TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Password can't be empty... ";
-                          }
-                          return null;
-                        },
-                        onChanged: (newPassword) {
-                          widget.password = newPassword;
-                        },
-                        decoration: InputDecoration(
-                            hintText: context.localization.enterYourPassword,
-                            suffix: InkWell(
-                              onTap: () {
-                                isHidden = !isHidden;
-                                setState(() {});
-                              },
-                              child: Icon(
-                                isHidden
-                                    ? (Icons.visibility_off)
-                                    : (Icons.visibility),
-                                color: AppColors.black,
-                              ),
-                            )),
-                        obscureText: isHidden,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            buildPassContainer(context),
             const SizedBox(
               height: 30,
             ),
             const SizedBox(
               height: 10,
             ),
-            ElevatedButton(
-                style: const ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(AppColors.primary)),
-                onPressed: () {
-                  if (_passKey.currentState!.validate() &&
-                      _mailKey.currentState!.validate()) {
-                    loginWithMailAndPassword();
-                  }
-                },
-                child: Text(
-                  context.localization.login,
-                  style: const TextStyle(color: AppColors.white, fontSize: 18),
-                )),
+            buildloginButton(context),
             const SizedBox(
               height: 20,
             ),
@@ -182,17 +85,133 @@ class _LoginState extends State<Login> {
     );
   }
 
+  ElevatedButton buildloginButton(BuildContext context) {
+    return ElevatedButton(
+        style: const ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(AppColors.primary)),
+        onPressed: () {
+          if (_passKey.currentState!.validate() &&
+              _mailKey.currentState!.validate()) {
+            loginWithMailAndPassword();
+            if (FirebaseAuth.instance.currentUser != null &&
+                !FirebaseAuth.instance.currentUser!.emailVerified) {
+              Dialogue.showErrorDialog(
+                  context, "verify Your E-mail before log in ...");
+              Timer.periodic(const Duration(seconds: 6), (timer) {
+                FirebaseAuth.instance.currentUser!.reload();
+                if (FirebaseAuth.instance.currentUser!.emailVerified) {
+                  Navigator.pushReplacementNamed(context, Splash.routeName);
+                  timer.cancel();
+                }
+              });
+            } else {
+              Navigator.pushReplacementNamed(context, Splash.routeName);
+            }
+          }
+        },
+        child: Text(
+          context.localization.login,
+          style: const TextStyle(color: AppColors.white, fontSize: 18),
+        ));
+  }
+
+  Container buildPassContainer(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: AppColors.green)),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.password_outlined,
+            color: AppColors.black,
+          ),
+          const SizedBox(
+            width: 4,
+          ),
+          Expanded(
+            child: Form(
+              key: _passKey,
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Password can't be empty... ";
+                  }
+                  return null;
+                },
+                onChanged: (newPassword) {
+                  widget.password = newPassword;
+                },
+                decoration: InputDecoration(
+                    hintText: context.localization.enterYourPassword,
+                    suffix: InkWell(
+                      onTap: () {
+                        isHidden = !isHidden;
+                        setState(() {});
+                      },
+                      child: Icon(
+                        isHidden ? (Icons.visibility_off) : (Icons.visibility),
+                        color: AppColors.black,
+                      ),
+                    )),
+                obscureText: isHidden,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container buildMailContainer(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: AppColors.green)),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.email_rounded,
+            color: AppColors.black,
+          ),
+          const SizedBox(
+            width: 4,
+          ),
+          Expanded(
+            child: Form(
+              key: _mailKey,
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Email can't be empty... ";
+                  }
+                  return null;
+                },
+                onChanged: (newEmail) {
+                  widget.email = newEmail;
+                },
+                decoration: InputDecoration(
+                  hintText: context.localization.enterYourEmail,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void loginWithMailAndPassword() async {
     try {
-      Dialogue.showLoading(context);
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: widget.email, password: widget.password);
-
-      Dialogue.hideLoading(context);
-
-      Navigator.pushReplacementNamed(context, Home.routeName);
     } on FirebaseAuthException catch (e) {
-      Dialogue.hideLoading(context);
       Dialogue.showErrorDialog(
           context, context.localization.wrongEmailOrPassword);
 

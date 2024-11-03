@@ -6,8 +6,8 @@ import 'package:to_do_app/model/my_user.dart';
 import 'package:to_do_app/model/todo_model.dart';
 import 'package:to_do_app/ui/providers/list_provider.dart';
 import 'package:to_do_app/ui/providers/theme_provider.dart';
-import 'package:to_do_app/utils/app_styles.dart';
 import 'package:to_do_app/utils/extensions.dart';
+
 import '../../../utils/app_colors.dart';
 
 class MyBottomSheet extends StatefulWidget {
@@ -62,11 +62,13 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                 textAlign: TextAlign.center,
               ),
               TextField(
+                style: Theme.of(context).textTheme.bodySmall,
                 controller: titleController,
                 decoration: InputDecoration(
                     hintText: context.localization.enterYourTask),
               ),
               TextField(
+                style: Theme.of(context).textTheme.bodySmall,
                 controller: descriptionController,
                 decoration: InputDecoration(
                     hintText: context.localization.enterYourDescription),
@@ -91,7 +93,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                 height: 10,
               ),
               Text(
-                "${provider.selectedDate.day}/${provider.selectedDate.month}/${provider.selectedDate.year}",
+                "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .textTheme
@@ -106,10 +108,13 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                   onPressed: () async {
                     await addTodoToFirebase();
                     Navigator.pop(context);
+                    descriptionController.text = "";
+                    titleController.text = "";
                   },
                   child: Text(
                     context.localization.add,
-                    style: TextStyle(color: AppColors.white, fontSize: 18),
+                    style:
+                        const TextStyle(color: AppColors.white, fontSize: 18),
                   ))
             ],
           ),
