@@ -5,6 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/model/my_user.dart';
 import 'package:to_do_app/model/todo_model.dart';
+import 'package:to_do_app/ui/providers/lang_provider.dart';
 import 'package:to_do_app/ui/providers/list_provider.dart';
 import 'package:to_do_app/ui/providers/theme_provider.dart';
 import 'package:to_do_app/utils/app_colors.dart';
@@ -25,8 +26,10 @@ class Todo extends StatefulWidget {
 class _TodoState extends State<Todo> {
   late ListProvider provider;
   late ThemeProvider themeProvider;
+  late LanguageProvider languageProvider;
   @override
   Widget build(BuildContext context) {
+    languageProvider = Provider.of(context);
     provider = Provider.of(context);
     themeProvider = Provider.of(context);
     Color stateColor = widget.item.isDone ? AppColors.green : AppColors.primary;
@@ -93,8 +96,11 @@ class _TodoState extends State<Todo> {
         Navigator.pushReplacementNamed(context, Edit.routeName,
             arguments: widget.item.id);
       },
-      borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(15), bottomLeft: Radius.circular(15)),
+      borderRadius: languageProvider.selectedLang == "en"
+          ? const BorderRadius.only(
+              topLeft: Radius.circular(15), bottomLeft: Radius.circular(15))
+          : const BorderRadius.only(
+              topRight: Radius.circular(15), bottomRight: Radius.circular(15)),
       backgroundColor: const Color(0xffb6b0b0),
       foregroundColor: Colors.white,
       icon: Icons.edit,
@@ -115,7 +121,9 @@ class _TodoState extends State<Todo> {
         },
         child: !widget.item.isDone
             ? Container(
-                margin: const EdgeInsets.only(right: 20),
+                margin: languageProvider.selectedLang == "en"
+                    ? const EdgeInsets.only(right: 20)
+                    : const EdgeInsets.only(left: 20),
                 width: 68,
                 height: 34,
                 decoration: BoxDecoration(
@@ -128,9 +136,11 @@ class _TodoState extends State<Todo> {
                 ),
               )
             : Padding(
-                padding: const EdgeInsets.only(
-                  right: 32,
-                ),
+                padding: languageProvider.selectedLang == "en"
+                    ? const EdgeInsets.only(
+                        right: 32,
+                      )
+                    : const EdgeInsets.only(left: 32),
                 child: Text(
                   context.localization.done,
                   style: AppStyles.appBar.copyWith(color: AppColors.green),

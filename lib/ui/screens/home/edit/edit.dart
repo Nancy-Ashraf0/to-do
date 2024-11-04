@@ -157,7 +157,7 @@ class _EditState extends State<Edit> {
   void myDatePicker() async {
     selectedDate = (await showDatePicker(
             context: context,
-            initialDate: provider.selectedDate,
+            initialDate: selectedDate,
             firstDate: DateTime.now(),
             lastDate: DateTime.now().add(const Duration(days: 365)))) ??
         selectedDate;

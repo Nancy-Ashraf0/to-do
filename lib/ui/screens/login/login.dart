@@ -76,7 +76,7 @@ class _LoginState extends State<Login> {
                 ),
               ),
               onTap: () {
-                Navigator.pushNamed(context, Register.routeName);
+                Navigator.pushReplacementNamed(context, Register.routeName);
               },
             ),
           ],

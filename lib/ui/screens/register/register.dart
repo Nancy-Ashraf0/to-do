@@ -195,7 +195,7 @@ class _RegisterState extends State<Register> {
                     if (FirebaseAuth.instance.currentUser != null) {
                       FirebaseAuth.instance.currentUser!
                           .sendEmailVerification();
-                      Timer.periodic(Duration(seconds: 6), (timer) {
+                      Timer.periodic(const Duration(seconds: 3), (timer) {
                         FirebaseAuth.instance.currentUser!.reload();
                         if (FirebaseAuth.instance.currentUser!.emailVerified) {
                           Navigator.pushReplacementNamed(
@@ -226,9 +226,9 @@ class _RegisterState extends State<Register> {
       MyUser myUser =
           MyUser(id: credential.user!.uid, email: email, name: name);
       myUser.saveUserInFirestore();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.localization.registrationSuccessful)),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text(context.localization.registrationSuccessful)),
+      // );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         Dialogue.showErrorDialog(context, e.code);
